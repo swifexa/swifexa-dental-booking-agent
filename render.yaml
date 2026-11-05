@@ -1,0 +1,26 @@
+# Render deployment config for the Swifexa AI booking agent (proper setup).
+# Deploy: connect this folder's repo to Render, or use the Render dashboard
+# with the same settings. Render sets $PORT automatically; app.py reads it.
+# No build step is needed: Python stdlib only, no pip install.
+# IMPORTANT: SQLite (bookings.db) on Render's ephemeral filesystem resets
+# on redeploy unless a persistent disk is attached. For a real pilot,
+# either attach a Render persistent disk mounted at the DATABASE_PATH
+# directory, or migrate store.py to Postgres (same column names — see
+# proper-setup-spec.md). Do not rely on the default SQLite file alone
+# for paid pilot data.
+services:
+  - type: web
+    name: swifexa-dental-booking-agent
+    env: python
+    buildCommand: ""
+    startCommand: python3 app.py
+    envVars:
+      - key: AGENT_MODE
+        value: production
+      - key: BUSINESS_NAME
+        value: Swifexa Dental Demo
+      # Set these in the Render dashboard (never in this file):
+      # TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER,
+      # TWILIO_SEND_ENABLED=1, GOOGLE_TTS_ENABLED, GOOGLE_APPLICATION_CREDENTIALS,
+      # GOOGLE_TTS_VOICE, LLM_API_KEY, LLM_MODEL, CALENDAR_ENABLED, CALENDAR_ID,
+      # DATABASE_PATH
